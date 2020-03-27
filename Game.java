@@ -1,11 +1,9 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
-import java.util.Scanner;
 
-public class Game extends Canvas implements Runnable, ActionListener {
+public class Game extends Canvas implements Runnable {
+	// Basic instance variables for Game
+	// Various objects to run Game (Cell, Thread, Handler)
 	private Cell defCell;
 	private int Width = (defCell.getCellSize() + 5) * 9;
 	private int Height = (defCell.getCellSize() + 5) * 9;
@@ -15,13 +13,12 @@ public class Game extends Canvas implements Runnable, ActionListener {
 	private int boardSize;
 	private int numMines;
 	boolean[][] boardMines;
-	int[][] minesTouching;
-	Scanner sc = new Scanner(System.in);
-	Cell[][] cells;   // enum attempt
+	public int[][] minesTouching;
+	Cell[][] cells;
 	
 	public void buildBoard()
 	{
-//		int dif = 1;        ***NOTE: will implement difficulty later**
+//		int dif = 1;        ***NOTE: will implement difficulty later***
 //		if (dif == 1) {
 			boardSize = 9;
 			numMines = 10;
@@ -42,17 +39,19 @@ public class Game extends Canvas implements Runnable, ActionListener {
 				minesLeft--;
 			}
 		}
-		buildBoards();
+		buildAllBoards();
 	}
-	// jay's attempt ------------------------------------------------------------------------------------------------
 	public boolean ifPositionExists(int r, int c) {
+		// If r AND c are within the range, return true
 		boolean ifXExists = r >= 0 && r < boardSize;
 		boolean ifYExists = c >= 0 && c < boardSize;
 		return ifXExists && ifYExists;
 	}
-	public void buildBoards() {
+	public void buildAllBoards() {
+		// Initiates all mines in board to false
 		for (int r = 0; r < boardSize; r++) { for (int c = 0; c < boardSize; c++) { boardMines[r][c] = false; } }
 		int minesLeft = numMines;
+		// Adds all mines at random positions until none left
 		while (minesLeft > 0)
 		{
 			int randX = (int)(Math.random() * boardSize);
@@ -62,10 +61,12 @@ public class Game extends Canvas implements Runnable, ActionListener {
 				minesLeft--;
 			}
 		}
+		// Creates board to get number of mines touching at each spot
 		for (int r = 0; r < boardSize; r++) {
 			for (int c = 0; c < boardSize; c++) {
 				if (!boardMines[r][c]) // if position [r][c] isn't a mine...
 				{
+					// ifPositionExists() used to ensure no errors with matrix
 					int count = 0;
 					if (ifPositionExists(r - 1, c - 1) && boardMines[r - 1][c - 1]) {
 						count++;
@@ -98,14 +99,17 @@ public class Game extends Canvas implements Runnable, ActionListener {
 				}
 				else
 				{
+					// If there is a mine at [r,c], sets value to 10
 					minesTouching[r][c] = 10;
 				}
 			}
 		}
 		for (int r = 0; r < boardSize; r++) {
 			for (int c = 0; c < boardSize; c++) {
+				// Creates x and y value for GUI
 				int x = (r / 9) * 64;
 				int y = (c % 9) * 64;
+				// Creates Cell at each spot
 				if (boardMines[r][c]) // if bool at boardMines[r][c] is true, it is a bomb
 					cells[r][c] = new Cell(x,y,ID.Bomb,handler);
 				else
@@ -114,19 +118,25 @@ public class Game extends Canvas implements Runnable, ActionListener {
 			}
 		}
 	}
-	// jay's attempt -------------------------------------------------------------------------------------------------
+	public int getNumMines(int x, int y) {
+		int r = (x / 64) * 9;
+		int c = (y / 64) * 9;
+		return minesTouching[r][c];
+	}
 	public Game() {
 	  handler = new Handler();
-		new Window(Width, Height, "Minesweeper", this);
-		//handler.addObject();
+	  buildBoard();
+	  new Window(Width, Height, "Minesweeper", this);
 	}
 	
+	// Starts Thread for Game to run
 	public void start() {
 		thread = new Thread(this);
 		thread.start();
 		running = true;
 	}
 	
+	// Ends Thread when Game is finished
 	public void stop() {
 		try
 		{
@@ -213,10 +223,6 @@ public class Game extends Canvas implements Runnable, ActionListener {
 		}
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-	
-	}
 	
 	public static void main(String args[])
 	{
