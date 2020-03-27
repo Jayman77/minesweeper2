@@ -3,6 +3,7 @@ import java.awt.*;
 
 public class Window {
 	
+	// Create Window for GUI
 	public Window(int width, int height, String title, Game game)
 	{
 		JFrame frame = new JFrame(title);
@@ -11,6 +12,7 @@ public class Window {
 		frame.setMaximumSize(new Dimension(width, height));
 		frame.setMinimumSize(new Dimension(width, height));
 		
+		// All basic operations for frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
