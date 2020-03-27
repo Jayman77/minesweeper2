@@ -149,6 +149,7 @@ public class Game extends Canvas implements Runnable {
 		}
 	}
 	
+	// calls tick and render method based on a timed system based on amount of tiks and fps
 	public void run() {
 		double delta = 0;
 		this.requestFocus();
@@ -186,8 +187,10 @@ public class Game extends Canvas implements Runnable {
 		stop();
 	}
 	
+	// tick method to move objects around
 	public void tick() {	}
 	
+	// allows game objects to be rendered onto the screen
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
 		
@@ -206,6 +209,7 @@ public class Game extends Canvas implements Runnable {
 		bs.show();
 	}
 	
+	// clamps objects to the screen
 	public static float clamp(float var, float min, float max) {
 		if(var >= max)
 		{
