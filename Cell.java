@@ -3,16 +3,18 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 public class Cell extends GameObject {
-	@SuppressWarnings("unused")
 	private Handler handler;
+	private Game game;
 	private int cellSize = 20;
 	
+	// enum to determine state of Cell
 	public enum STATE {
 		Hidden,
 		Flagged,
 		Showing
 	}
-
+	
+	// Changes STATE based on user action
 	public STATE unpressed = STATE.Hidden;
 	public STATE rClicked = STATE.Flagged;
 	public STATE lClicked = STATE.Showing;
@@ -21,14 +23,19 @@ public class Cell extends GameObject {
 		super(x, y, id);
 		this.handler = handler;
 	}
+	
 	public int getCellSize() { return cellSize; }
+	
 	@Override
 	public void render(Graphics g) {
-		if(unpressed == STATE.Hidden) {
+		if (unpressed == STATE.Hidden) { // NOTE: need user input for parameter(buttonClicked)
+			// If hidden, makes empty rectangle
 			g.setColor(Color.WHITE);
 			g.fillRect((int)x, (int)y, cellSize, cellSize);
-		} else if(unpressed == STATE.Showing) {
-		
+		} else {
+			// If showing
+			String numTouching = Integer.toString(game.getNumMines(x,y));
+			g.drawString(numTouching,x,y);
 		}
 		
 	}
